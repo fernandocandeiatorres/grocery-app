@@ -2,9 +2,18 @@ import React, { useState, useEffect } from "react";
 import List from "./List";
 import Alert from "./Alert";
 
+const getLocalStorage = () => {
+  let list = localStorage.getItem("list");
+  if (list) {
+    return JSON.parse(localStorage.getItem("list"));
+  } else {
+    return [];
+  }
+};
+
 function App() {
   const [grocery, setGrocery] = useState("");
-  const [groceryList, setGroceryList] = useState([]);
+  const [groceryList, setGroceryList] = useState(getLocalStorage());
   const [action, setAction] = useState("");
   const [alert, setAlert] = useState(false);
 
@@ -69,6 +78,10 @@ function App() {
     };
   });
 
+  useEffect(() => {
+    localStorage.setItem("list", JSON.stringify(groceryList));
+  }, [groceryList]);
+
   return (
     <div className="bg-slate-100 flex justify-center items-start h-screen">
       {/* MAIN CONTAINER */}
@@ -120,7 +133,10 @@ function App() {
           </div>
           <button
             className="text-red-500 w-full hover:bg-gray-100 active:bg-gray-200"
-            onClick={() => setGroceryList([])}
+            onClick={() => {
+              setGroceryList([]);
+              setGrocery("");
+            }}
           >
             CLEAR ITEMS
           </button>
